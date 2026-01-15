@@ -16,31 +16,41 @@ st.title("📊 Sales Campaign Best Practices Sharing Portal")
 # ----------------------------
 df = pd.read_csv("campaigns.csv")
 
-# Sort by votes (best practices on top)
-df = df.sort_values("Votes", ascending=False)
+# Sort by votes (highest first)
+df = df.sort_values("Votes", ascending=False).reset_index(drop=True)
 
 # ----------------------------
-# Campaign table
+# Campaign overview (merged with voting)
 # ----------------------------
-st.subheader("📋 Campaign Overview")
-st.dataframe(df, use_container_width=True, hide_index=True)
+st.subheader("📋 Campaign Overview & Voting")
 
-# ----------------------------
-# Voting section
-# ----------------------------
-st.subheader("👍 Vote for Best Practices")
-st.info("Click 👍 to upvote a campaign.")
+# Table header
+h1, h2, h3, h4, h5 = st.columns([2, 3, 3, 3, 1])
+h1.markdown("**Country**")
+h2.markdown("**Campaign Name**")
+h3.markdown("**Channel**")
+h4.markdown("**Result / Impact**")
+h5.markdown("**Vote**")
 
+st.divider()
+
+# Table rows
 for index, row in df.iterrows():
-    col1, col2, col3 = st.columns([5, 3, 1])
+    c1, c2, c3, c4, c5 = st.columns([2, 3, 3, 3, 1])
 
-    with col1:
-        st.write(f"**{row['Campaign Name']}** ({row['Country']})")
+    with c1:
+        st.write(row["Country"])
 
-    with col2:
+    with c2:
+        st.write(row["Campaign Name"])
+
+    with c3:
+        st.write(row["Channel"])
+
+    with c4:
         st.write(row["Result / Impact"])
 
-    with col3:
+    with c5:
         if st.button(f"👍 {row['Votes']}", key=f"vote_{index}"):
             df.loc[index, "Votes"] += 1
             df.to_csv("campaigns.csv", index=False)
@@ -71,7 +81,7 @@ with st.form("add_campaign_form"):
     submitted = st.form_submit_button("Submit Campaign")
 
 # ----------------------------
-# Save submitted campaign
+# Save new campaign
 # ----------------------------
 if submitted:
     new_row = {
