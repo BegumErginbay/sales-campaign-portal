@@ -90,7 +90,7 @@ for index, row in df.iterrows():
     if c6.button(f"👍 {row['Votes']}", key=f"vote_{index}"):
         df.loc[index, "Votes"] += 1
         df.to_csv("campaigns.csv", index=False)
-        st.experimental_rerun()
+        st.rerun()
 
     # Expandable details
     with st.expander("View details"):
@@ -165,4 +165,4 @@ if submitted:
     df.to_csv("campaigns.csv", index=False)
 
     st.success("✅ Campaign submitted successfully!")
-    st.experimental_rerun()
+    st.rerun()
