@@ -63,20 +63,36 @@ st.divider()
 st.subheader("➕ Submit a New Best Practice")
 
 with st.form("add_campaign_form"):
-    country = st.text_input("Country (e.g. TH, TR, IN)")
+
+    country = st.multiselect(
+        "Country",
+        options=[
+            "TR", "TH", "IN", "EG", "VN", "MY", "ZA", "KZ", "SG"
+        ]
+    )
+
     campaign_name = st.text_input("Campaign Name")
-    channel = st.selectbox(
+
+    channel = st.multiselect(
         "Channel",
-        ["D2C Online", "Marketplace", "Offline", "Hybrid"]
+        options=[
+            "D2C",
+            "Partner Operated D2C",
+            "KRT",
+            "ERT",
+            "Project Business B2B",
+            "Wholesale / Internal Distributor",
+            "Export Distributor"
+        ]
     )
-    period = st.selectbox(
-        "Campaign Period",
-        ["Q1", "Q2", "Q3", "Q4"]
+
+    campaign_period = st.text_input(
+        "Campaign Period (e.g. Ramadan, Mother's Day, Q1, Summer, May)"
     )
-    objective = st.text_input("Objective")
-    description = st.text_area("Campaign Description")
-    result = st.text_area("Result / Impact")
-    filled_by = st.text_input("Filled By (Name / Team)")
+
+    focus_product = st.text_input(
+        "Focus Product (Category)"
+    )
 
     submitted = st.form_submit_button("Submit Campaign")
 
@@ -85,14 +101,11 @@ with st.form("add_campaign_form"):
 # ----------------------------
 if submitted:
     new_row = {
-        "Country": country,
+        "Country": ", ".join(country),
         "Campaign Name": campaign_name,
-        "Channel": channel,
-        "Campaign Period": period,
-        "Objective": objective,
-        "Description": description,
-        "Result / Impact": result,
-        "Filled By": filled_by,
+        "Channel": ", ".join(channel),
+        "Campaign Period": campaign_period,
+        "Focus Product (Category)": focus_product,
         "Votes": 0
     }
 
