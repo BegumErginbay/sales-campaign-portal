@@ -91,29 +91,29 @@ for index, row in df.iterrows():
     c5.write(row["Focus Product (Category)"])
 
     campaign_id = f"{row['Country']}_{row['Campaign Name']}"
+    has_voted = campaign_id in st.session_state.voted_campaigns
 
-has_voted = campaign_id in st.session_state.voted_campaigns
+    if c6.button(
+        f"👍 {row['Votes']}",
+        key=f"vote_{index}",
+        disabled=has_voted
+    ):
+        df.loc[index, "Votes"] += 1
+        df.to_csv("campaigns.csv", index=False)
 
-if c6.button(
-    f"👍 {row['Votes']}",
-    key=f"vote_{index}",
-    disabled=has_voted
-):
-    df.loc[index, "Votes"] += 1
-    df.to_csv("campaigns.csv", index=False)
+        st.session_state.voted_campaigns.add(campaign_id)
+        st.rerun()
 
-    st.session_state.voted_campaigns.add(campaign_id)
-    st.rerun()
+    if has_voted:
+        c6.caption("Voted")
 
-if has_voted:
-    c6.caption("Voted")   
-     
     # Expandable details
     with st.expander("View details"):
         st.write("**Campaign Objective:**", row["Campaign Objective"])
         st.write("**Campaign Description:**", row["Campaign Description"])
         st.write("**Result / Impact:**", row["Result / Impact"])
         st.write("**Filled By:**", row["Filled By"])
+
 
 # ----------------------------
 # Add new campaign form
