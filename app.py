@@ -105,7 +105,7 @@ if c6.button(
     st.session_state.voted_campaigns.add(campaign_id)
     st.rerun()
 
- if has_voted:
+if has_voted:
     c6.caption("Voted")   
      
     # Expandable details
