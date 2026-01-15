@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 
+if "voted_campaigns" not in st.session_state:
+    st.session_state.voted_campaigns = set()
+
 COUNTRIES = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola",
     "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
@@ -87,11 +90,24 @@ for index, row in df.iterrows():
     c4.write(row["Campaign Period"])
     c5.write(row["Focus Product (Category)"])
 
-    if c6.button(f"👍 {row['Votes']}", key=f"vote_{index}"):
-        df.loc[index, "Votes"] += 1
-        df.to_csv("campaigns.csv", index=False)
-        st.rerun()
+    campaign_id = f"{row['Country']}_{row['Campaign Name']}"
 
+has_voted = campaign_id in st.session_state.voted_campaigns
+
+if c6.button(
+    f"👍 {row['Votes']}",
+    key=f"vote_{index}",
+    disabled=has_voted
+):
+    df.loc[index, "Votes"] += 1
+    df.to_csv("campaigns.csv", index=False)
+
+    st.session_state.voted_campaigns.add(campaign_id)
+    st.rerun()
+
+ if has_voted:
+    c6.caption("Voted")   
+     
     # Expandable details
     with st.expander("View details"):
         st.write("**Campaign Objective:**", row["Campaign Objective"])
